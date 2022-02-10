@@ -5,6 +5,10 @@
 #include "Net.h"
 #include "Utils.h"
 #include <random>
+#include <iostream>
+
+using std::cout;
+using std::endl;
 
 Net::Net() {
     std::mt19937 rd;
@@ -174,6 +178,89 @@ void Net::backward(const vector<double> &out) {
             inputLayer[i]->weight_delta[j] += weight_delta;
         }
     }
+}
+
+bool Net::train(const vector<Sample> &trainDataSet) {
+    for (size_t epoch = 0; epoch <= Config::max_epoch; ++epoch) {
+        // 清零上一个 epoch 的梯度
+        grad_zero();
+
+        double max_loss = 0.f;
+
+        for (Sample sample: trainDataSet) {
+
+            // 将本组样本加载到网络中
+            for (size_t i = 0; i < Config::INNODE; ++i)
+                inputLayer[i]->value = sample.in[i];
+
+            // 前向传播
+            forward();
+
+            // 记录 Loss
+            max_loss = fmax(max_loss, CalculateLoss(sample.out));
+
+            // 反向传播
+            backward(sample.out);
+        }
+
+        // 判断是否停止训练
+        if (max_loss < Config::threshold) {
+            cout << "Success in " << epoch << " epoch." << endl;
+            cout << "Maximum error(loss): " << max_loss << endl;
+            return true;
+        }
+
+        // 各参数修正值作用
+        adjust(trainDataSet.size());
+    }
+
+    cout << "Failed within " << Config::max_epoch << " epoch." << endl;
+
+    return false;
+}
+
+void Net::adjust(size_t batch_size) {
+
+    double batch_size_double = (double) batch_size;
+
+    for (size_t i = 0; i < Config::INNODE; ++i) {
+        for (size_t j = 0; j < Config::HIDENODE; ++j) {
+            // 调整输入层节点到隐藏层节点权重
+            inputLayer[i]->weight[j] +=
+                    Config::lr * inputLayer[i]->weight_delta[j] / batch_size_double;
+        }
+    }
+
+    for (size_t j = 0; j < Config::HIDENODE; ++j) {
+        // 调整隐藏层节点偏置值
+        hideLayer[j]->bias +=
+                Config::lr * hideLayer[j]->bias_delta / batch_size_double;
+        for (size_t k = 0; k < Config::OUTNODE; ++k) {
+            // 调整隐藏层节点到输出层节点权重
+            hideLayer[j]->weight[k] +=
+                    Config::lr * hideLayer[j]->weight_delta[k] / batch_size_double;
+        }
+    }
+
+    for (size_t k = 0; k < Config::OUTNODE; ++k) {
+        // 调整输出层节点偏置值
+        outputLayer[k]->bias +=
+                Config::lr * outputLayer[k]->bias_delta / batch_size_double;
+    }
+}
+
+vector<double> Net::predict(const vector<double> &in) {
+    vector<double> pred(Config::OUTNODE);
+
+    for (size_t i = 0; i < Config::INNODE; ++i)
+        inputLayer[i]->value = in[i];
+
+    forward();
+
+    for (size_t k = 0; k < Config::OUTNODE; ++k)
+        pred[k] = outputLayer[k]->value;
+
+    return pred;
 }
 
 Node::Node(int size) {

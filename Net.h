@@ -38,14 +38,38 @@ public:
     void forward();
 
     /**
-     * 计算 Loss，以便向下计算梯度
+     * 计算损失函数 Loss 值
+     * @param out 对应本组样本真实的输出向量/值
+     * @return Loss 值
      */
     double CalculateLoss(const vector<double> &out);
 
     /**
      * 反向传播
+     * @param out 对应本组样本真实的输出向量/值
      */
      void backward(const vector<double> &out);
+
+     /**
+      * 训练网络
+      * @param trainDataSet 训练数据集
+      * @return 是否训练成功
+      */
+     bool train(const vector<Sample> &trainDataSet);
+
+     /**
+      * 利用反向传播计算的修正值调整各参数值
+      * 对于一个 batch 的修正值作用效果，采取平均值
+      * @param batch_size batch 大小
+      */
+     void adjust(size_t batch_size);
+
+     /**
+      * 利用训练好的网络进行预测
+      * @param in 需要预测的输入向量
+      * @return 网络预测的输出向量/值
+      */
+     vector<double> predict(const vector<double> &in);
 };
 
 
