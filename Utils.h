@@ -9,7 +9,7 @@
 #include <cmath>
 #include <vector>
 #include <string>
-#include "Sample.h"
+#include "Net.h"
 
 using std::vector;
 using std::string;

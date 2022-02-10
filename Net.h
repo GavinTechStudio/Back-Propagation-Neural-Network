@@ -7,9 +7,12 @@
 
 #include <vector>
 #include "Config.h"
-#include "Sample.h"
 
 using std::vector;
+
+struct Sample {
+    vector<double> in, out;
+};
 
 struct Node {
     double value{}, bias{}, bias_delta{};
