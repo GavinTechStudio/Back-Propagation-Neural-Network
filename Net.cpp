@@ -150,7 +150,7 @@ void Net::backward(const vector<double> &out) {
         double bias_delta = 0.f;
         for (size_t k = 0; k < Config::OUTNODE; ++k) {
             bias_delta +=
-                    (out[k] - outputLayer[k]->value)
+                    -(out[k] - outputLayer[k]->value)
                     * outputLayer[k]->value * (1.0 - outputLayer[k]->value)
                     * hideLayer[j]->weight[k];
         }
@@ -187,7 +187,7 @@ bool Net::train(const vector<Sample> &trainDataSet) {
 
         double max_loss = 0.f;
 
-        for (Sample sample: trainDataSet) {
+        for (const Sample &sample: trainDataSet) {
 
             // 将本组样本加载到网络中
             for (size_t i = 0; i < Config::INNODE; ++i)
@@ -197,7 +197,8 @@ bool Net::train(const vector<Sample> &trainDataSet) {
             forward();
 
             // 记录 Loss
-            max_loss = fmax(max_loss, CalculateLoss(sample.out));
+            double loss = CalculateLoss(sample.out);
+            max_loss = std::max(max_loss, loss);
 
             // 反向传播
             backward(sample.out);
@@ -208,7 +209,7 @@ bool Net::train(const vector<Sample> &trainDataSet) {
             cout << "Success in " << epoch << " epoch." << endl;
             cout << "Final maximum error(loss): " << max_loss << endl;
             return true;
-        } else if (epoch % 1000 == 0) {
+        } else if (epoch % 5000 == 0) {
             cout << "#epoch " << epoch << " max_loss: " << max_loss << endl;
         }
 
