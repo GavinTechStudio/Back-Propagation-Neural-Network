@@ -16,7 +16,7 @@ $$
 $$
 
 $$
-\Delta v_{jk} = \eta \sum_k ( y_k - \hat{y_k} ) \hat{y_k} ( 1 - \hat{y_k} ) h_j
+\Delta v_{jk} = \eta ( y_k - \hat{y_k} ) \hat{y_k} ( 1 - \hat{y_k} ) h_j
 $$
 
 $$

@@ -131,7 +131,7 @@ void Net::backward(const vector<double> &out) {
     }
 
     // 计算隐藏层节点到输出层节点权重修正值
-    // \Delta v_{jk} = \eta \sum_k ( y_k - \hat{y_k} ) \hat{y_k} ( 1 - \hat{y_k} ) h_j
+    // \Delta v_{jk} = \eta ( y_k - \hat{y_k} ) \hat{y_k} ( 1 - \hat{y_k} ) h_j
     for (size_t j = 0; j < Config::HIDENODE; ++j) {
         for (size_t k = 0; k < Config::OUTNODE; ++k) {
             double weight_delta =
@@ -154,7 +154,7 @@ void Net::backward(const vector<double> &out) {
                     * hideLayer[j]->weight[k];
         }
         bias_delta *=
-                hideLayer[j]->value * (1 - hideLayer[j]->value);
+                hideLayer[j]->value * (1.0 - hideLayer[j]->value);
 
         hideLayer[j]->bias_delta += bias_delta;
     }
@@ -208,7 +208,7 @@ bool Net::train(const vector<Sample> &trainDataSet) {
             cout << "Success in " << epoch << " epoch." << endl;
             cout << "Final maximum error(loss): " << max_loss << endl;
             return true;
-        } else if (epoch % 5000 == 0) {
+        } else if (epoch % 10000 == 0) {
             cout << "#epoch " << epoch << " max_loss: " << max_loss << endl;
         }
 

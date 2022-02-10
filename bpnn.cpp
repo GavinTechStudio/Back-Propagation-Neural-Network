@@ -141,10 +141,11 @@ int main(int argc, char *argv[]) {
 
     init();
 
-    std::vector<Sample> train_data = utils::getTrainData("traindata.txt");
+    std::vector<Sample> train_data = utils::getTrainData("cmake-build-debug/traindata.txt");
+    printf("%lu\n", train_data.size());
 
     // training
-    for (size_t times = 0; times < mosttimes; times++) {
+    for (size_t times = 0; times <= mosttimes; times++) {
 
         reset_delta();
 
