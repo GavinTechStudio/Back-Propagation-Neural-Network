@@ -15,7 +15,7 @@ struct Node {
     double value{}, bias{}, bias_delta{};
     vector<double> weight, weight_delta;
 
-    Node(int size);
+    explicit Node(size_t nextLayerSize);
 };
 
 class Net {

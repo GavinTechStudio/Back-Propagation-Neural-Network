@@ -206,8 +206,10 @@ bool Net::train(const vector<Sample> &trainDataSet) {
         // 判断是否停止训练
         if (max_loss < Config::threshold) {
             cout << "Success in " << epoch << " epoch." << endl;
-            cout << "Maximum error(loss): " << max_loss << endl;
+            cout << "Final maximum error(loss): " << max_loss << endl;
             return true;
+        } else if (epoch % 500 == 0) {
+            cout << "#epoch " << epoch << " max_loss: " << max_loss << endl;
         }
 
         // 各参数修正值作用
@@ -263,6 +265,7 @@ vector<double> Net::predict(const vector<double> &in) {
     return pred;
 }
 
-Node::Node(int size) {
-    weight.resize(size);
+Node::Node(size_t nextLayerSize) {
+    weight.resize(nextLayerSize);
+    weight_delta.resize(nextLayerSize);
 }
