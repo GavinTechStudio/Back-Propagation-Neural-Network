@@ -56,7 +56,7 @@ public:
     /**
      * 训练网络
      * @param trainDataSet 训练数据集
-     * @return 是否训练成功
+     * @return 是否训练成功（收敛）
      */
     bool train(const vector<Sample> &trainDataSet);
 

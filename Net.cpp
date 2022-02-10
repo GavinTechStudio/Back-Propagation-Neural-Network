@@ -91,7 +91,7 @@ void Net::forward() {
     }
 
     // 隐藏层向输出层传播
-    // \hat{y_k} = \sigma( \sum_j h_j v_{jk} - \lambda )
+    // \hat{y_k} = \sigma( \sum_j h_j v_{jk} - \lambda_k )
     for (size_t k = 0; k < Config::OUTNODE; ++k) {
         // 计算第 k 个输出层节点的值
         double sum = 0;
@@ -139,7 +139,6 @@ void Net::backward(const vector<double> &out) {
                     * outputLayer[k]->value * (1.0 - outputLayer[k]->value)
                     * hideLayer[j]->value;
 
-
             hideLayer[j]->weight_delta[k] += weight_delta;
         }
     }
@@ -172,7 +171,7 @@ void Net::backward(const vector<double> &out) {
                         * hideLayer[j]->weight[k];
             }
             weight_delta *=
-                    hideLayer[j]->value * (1 - hideLayer[j]->value)
+                    hideLayer[j]->value * (1.0 - hideLayer[j]->value)
                     * inputLayer[i]->value;
 
             inputLayer[i]->weight_delta[j] += weight_delta;
@@ -224,7 +223,7 @@ bool Net::train(const vector<Sample> &trainDataSet) {
 
 void Net::adjust(size_t batch_size) {
 
-    double batch_size_double = (double) batch_size;
+    auto batch_size_double = (double) batch_size;
 
     for (size_t i = 0; i < Config::INNODE; ++i) {
         for (size_t j = 0; j < Config::HIDENODE; ++j) {
