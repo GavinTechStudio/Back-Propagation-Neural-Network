@@ -3,6 +3,7 @@
 //
 
 #include "Net.h"
+#include "Utils.h"
 #include <random>
 
 Net::Net() {
@@ -65,6 +66,35 @@ void Net::grad_zero() {
     // 清零输出层所有节点的 bias_delta
     for (auto &node_output: outputLayer) {
         node_output->bias_delta = 0.f;
+    }
+}
+
+void Net::forward() {
+
+    // 输入层向隐藏层传播
+    for (size_t j = 0; j < Config::HIDENODE; ++j) {
+        // 计算第 j 个隐藏层节点的值
+        double sum = 0;
+        for (size_t i = 0; i < Config::INNODE; ++i) {
+            // 第 i 个输入层节点对第 j 个隐藏层节点的贡献
+            sum += inputLayer[i]->value * inputLayer[i]->weight[j];
+        }
+        sum -= hideLayer[j]->bias;
+
+        hideLayer[j]->value = Utils::sigmoid(sum);
+    }
+
+    // 隐藏层向输出层传播
+    for (size_t k = 0; k < Config::OUTNODE; ++k) {
+        // 计算第 k 个输出层节点的值
+        double sum = 0;
+        for (size_t j = 0; j < Config::HIDENODE; ++j) {
+            // 第 j 个隐藏层节点对第 k 个输出层节点的恭喜
+            sum += hideLayer[j]->value * hideLayer[j]->weight[k];
+        }
+        sum -= outputLayer[k]->bias;
+
+        outputLayer[k]->value = Utils::sigmoid(sum);
     }
 }
 

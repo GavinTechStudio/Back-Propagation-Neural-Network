@@ -7,6 +7,7 @@
 
 #include <vector>
 #include "Config.h"
+#include "Sample.h"
 
 using std::vector;
 
@@ -30,6 +31,11 @@ public:
      * 消除本次迭代的梯度修正，以便进行下一次的迭代
      */
     void grad_zero();
+
+    /**
+     * 前向传播
+     */
+    void forward();
 };
 
 
