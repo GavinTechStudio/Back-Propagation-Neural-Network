@@ -36,6 +36,11 @@ public:
      * 前向传播
      */
     void forward();
+
+    /**
+     * 计算 Loss，以便向下计算梯度
+     */
+    double CalculateLoss(const vector<double> &out);
 };
 
 

@@ -98,6 +98,17 @@ void Net::forward() {
     }
 }
 
+double Net::CalculateLoss(const vector<double> &out) {
+    double loss = 0.f;
+
+    for (size_t k = 0; k < Config::OUTNODE; ++k) {
+        double tmp = std::fabs(outputLayer[k]->value - out[k]);
+        loss += tmp * tmp / 2;
+    }
+
+    return loss;
+}
+
 Node::Node(int size) {
     weight.resize(size);
 }
