@@ -208,7 +208,7 @@ bool Net::train(const vector<Sample> &trainDataSet) {
             cout << "Success in " << epoch << " epoch." << endl;
             cout << "Final maximum error(loss): " << max_loss << endl;
             return true;
-        } else if (epoch % 500 == 0) {
+        } else if (epoch % 1000 == 0) {
             cout << "#epoch " << epoch << " max_loss: " << max_loss << endl;
         }
 
