@@ -41,6 +41,11 @@ public:
      * 计算 Loss，以便向下计算梯度
      */
     double CalculateLoss(const vector<double> &out);
+
+    /**
+     * 反向传播
+     */
+     void backward(const vector<double> &out);
 };
 
 

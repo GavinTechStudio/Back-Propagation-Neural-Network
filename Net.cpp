@@ -72,6 +72,7 @@ void Net::grad_zero() {
 void Net::forward() {
 
     // 输入层向隐藏层传播
+    // h_j = \sigma( \sum_i x_i w_{ij} - \beta_j )
     for (size_t j = 0; j < Config::HIDENODE; ++j) {
         // 计算第 j 个隐藏层节点的值
         double sum = 0;
@@ -81,10 +82,12 @@ void Net::forward() {
         }
         sum -= hideLayer[j]->bias;
 
+        // 激活函数选用 sigmoid
         hideLayer[j]->value = Utils::sigmoid(sum);
     }
 
     // 隐藏层向输出层传播
+    // \hat{y_k} = \sigma( \sum_j h_j v_{jk} - \lambda )
     for (size_t k = 0; k < Config::OUTNODE; ++k) {
         // 计算第 k 个输出层节点的值
         double sum = 0;
@@ -94,6 +97,7 @@ void Net::forward() {
         }
         sum -= outputLayer[k]->bias;
 
+        // 激活函数选用 sigmoid
         outputLayer[k]->value = Utils::sigmoid(sum);
     }
 }
@@ -101,12 +105,75 @@ void Net::forward() {
 double Net::CalculateLoss(const vector<double> &out) {
     double loss = 0.f;
 
+    // Loss = \frac{1}{2}\sum_k ( y_k - \hat{y_k} )^2
     for (size_t k = 0; k < Config::OUTNODE; ++k) {
         double tmp = std::fabs(outputLayer[k]->value - out[k]);
         loss += tmp * tmp / 2;
     }
 
     return loss;
+}
+
+void Net::backward(const vector<double> &out) {
+
+    // 计算输出层节点的偏置值修正值
+    // \Delta \lambda_k = - \eta (y_k - \hat{y_k}) \hat{y_k} (1 - \hat{y_k})
+    for (size_t k = 0; k < Config::OUTNODE; ++k) {
+        double bias_delta =
+                -(out[k] - outputLayer[k]->value)
+                * outputLayer[k]->value * (1.0 - outputLayer[k]->value);
+
+        outputLayer[k]->bias_delta += bias_delta;
+    }
+
+    // 计算隐藏层节点到输出层节点权重修正值
+    // \Delta v_{jk} = \eta \sum_k ( y_k - \hat{y_k} ) \hat{y_k} ( 1 - \hat{y_k} ) h_j
+    for (size_t j = 0; j < Config::HIDENODE; ++j) {
+        for (size_t k = 0; k < Config::OUTNODE; ++k) {
+            double weight_delta =
+                    (out[k] - outputLayer[k]->value)
+                    * outputLayer[k]->value * (1.0 - outputLayer[k]->value)
+                    * hideLayer[j]->value;
+
+
+            hideLayer[j]->weight_delta[k] += weight_delta;
+        }
+    }
+
+    // 计算隐藏层节点的偏置值修正值
+    // \Delta \beta_j = - \eta \sum_k ( y_k - \hat{y_k} ) \hat{y_k} ( 1 - \hat{y_k} ) v_{jk} h_j ( 1 - h_j )
+    for (size_t j = 0; j < Config::HIDENODE; ++j) {
+        double bias_delta = 0.f;
+        for (size_t k = 0; k < Config::OUTNODE; ++k) {
+            bias_delta +=
+                    (out[k] - outputLayer[k]->value)
+                    * outputLayer[k]->value * (1.0 - outputLayer[k]->value)
+                    * hideLayer[j]->weight[k];
+        }
+        bias_delta *=
+                hideLayer[j]->value * (1 - hideLayer[j]->value);
+
+        hideLayer[j]->bias_delta += bias_delta;
+    }
+
+    // 计算输入层节点到隐藏层节点权重修正值
+    // \Delta w_{ij} = \eta \sum_k ( y_k - \hat{y_k} ) \hat{y_k} ( 1 - \hat{y_k} ) v_{jk} h_j ( 1 - h_j ) x_i
+    for (size_t i = 0; i < Config::INNODE; ++i) {
+        for (size_t j = 0; j < Config::HIDENODE; ++j) {
+            double weight_delta = 0.f;
+            for (size_t k = 0; k < Config::OUTNODE; ++k) {
+                weight_delta +=
+                        (out[k] - outputLayer[k]->value)
+                        * outputLayer[k]->value * (1.0 - outputLayer[k]->value)
+                        * hideLayer[j]->weight[k];
+            }
+            weight_delta *=
+                    hideLayer[j]->value * (1 - hideLayer[j]->value)
+                    * inputLayer[i]->value;
+
+            inputLayer[i]->weight_delta[j] += weight_delta;
+        }
+    }
 }
 
 Node::Node(int size) {
