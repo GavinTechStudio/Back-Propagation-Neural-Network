@@ -49,6 +49,25 @@ Net::Net() {
     }
 }
 
+void Net::grad_zero() {
+
+    // 清零输入层所有节点的 weight_delta
+    for (auto &node_input: inputLayer) {
+        node_input->weight_delta.assign(node_input->weight_delta.size(), 0.f);
+    }
+
+    // 清零隐藏层所有节点的 bias_delta 和 weight_delta
+    for (auto &node_hide: hideLayer) {
+        node_hide->bias_delta = 0.f;
+        node_hide->weight_delta.assign(node_hide->weight_delta.size(), 0.f);
+    }
+
+    // 清零输出层所有节点的 bias_delta
+    for (auto &node_output: outputLayer) {
+        node_output->bias_delta = 0.f;
+    }
+}
+
 Node::Node(int size) {
     weight.resize(size);
 }
