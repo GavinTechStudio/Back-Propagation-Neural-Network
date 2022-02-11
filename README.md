@@ -1,7 +1,6 @@
 # Back-Propagation-Neural-Network
 
-[![language](https://img.shields.io/badge/language-C++-F34B7D)](https://github.com/GavinTechStudio/Back-Propagation-Neural-Network)
-[![update](https://img.shields.io/github/last-commit/GavinTechStudio/Back-Propagation-Neural-Network)](https://github.com/GavinTechStudio/Back-Propagation-Neural-Network)
+[![language](https://img.shields.io/badge/language-C++-F34B7D)](https://github.com/GavinTechStudio/Back-Propagation-Neural-Network)[![update](https://img.shields.io/github/last-commit/GavinTechStudio/Back-Propagation-Neural-Network)](https://github.com/GavinTechStudio/Back-Propagation-Neural-Network)
 
 本项目是基于C++实现基础BP神经网络，有助于深入理解BP神经网络原理。
 
