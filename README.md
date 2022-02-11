@@ -44,6 +44,11 @@
 
 具体公式推导请看视频讲解[彻底搞懂BP神经网络 理论推导+代码实现（C++）_哔哩哔哩_bilibili](https://www.bilibili.com/video/BV1Y64y1z7jM?p=1)
 
+本部分文档包含大量数学公式，由于GitHub的README页面不支持数学公式渲染，推荐以下阅读方式：
+
+1. 如果您使用的是Chrome、Edge、Firefox等浏览器，可以安装插件[MathJax Plugin for Github](https://chrome.google.com/webstore/detail/mathjax-plugin-for-github/ioemnmodlmafdkllaclgeombjnmnbima)（需要访问chrome web store）。
+2. 使用[PDF](README.pdf)的方式进行阅读。
+
 ### 0. 神经网络结构图
 
 ![](img/net-info.png)
