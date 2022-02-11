@@ -1,6 +1,6 @@
 # Back-Propagation-Neural-Network
 
-[![language](https://img.shields.io/badge/language-C++-F34B7D)](https://github.com/GavinTechStudio/Back-Propagation-Neural-Network)[![update](https://img.shields.io/github/last-commit/GavinTechStudio/Back-Propagation-Neural-Network)](https://github.com/GavinTechStudio/Back-Propagation-Neural-Network)
+[![language](https://img.shields.io/badge/language-C++-F34B7D)](https://github.com/GavinTechStudio/Back-Propagation-Neural-Network) [![update](https://img.shields.io/github/last-commit/GavinTechStudio/Back-Propagation-Neural-Network)](https://github.com/GavinTechStudio/Back-Propagation-Neural-Network)
 
 本项目是基于C++实现基础BP神经网络，有助于深入理解BP神经网络原理。
 
@@ -46,7 +46,8 @@
 本部分文档包含大量数学公式，由于GitHub的README页面不支持数学公式渲染，推荐以下阅读方式：
 
 1. 如果您使用的是Chrome、Edge、Firefox等浏览器，可以安装插件[MathJax Plugin for Github](https://chrome.google.com/webstore/detail/mathjax-plugin-for-github/ioemnmodlmafdkllaclgeombjnmnbima)（需要访问chrome web store）。
-2. 使用**[PDF](README.pdf)**的方式进行阅读（推荐）。
+2. 使用[**PDF**](README.pdf)的方式进行阅读。
+2. 使用[**预渲染的静态网页**](README.html)进行阅读（推荐）。
 
 ### 0. 神经网络结构图
 
