@@ -141,7 +141,7 @@ int main(int argc, char *argv[]) {
 
     init();
 
-    std::vector<Sample> train_data = utils::getTrainData("cmake-build-debug/traindata.txt");
+    std::vector<Sample> train_data = utils::getTrainData("data/traindata.txt");
     printf("%lu\n", train_data.size());
 
     // training

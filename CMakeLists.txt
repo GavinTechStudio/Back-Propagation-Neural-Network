@@ -3,4 +3,4 @@ project(BPNN)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(BPNN main.cpp Utils.cpp Utils.h Config.h Net.cpp Net.h)
+add_executable(BPNN main.cpp lib/Utils.cpp lib/Utils.h lib/Config.h lib/Net.cpp lib/Net.h)
