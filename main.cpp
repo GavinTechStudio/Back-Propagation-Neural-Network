@@ -18,9 +18,9 @@ int main(int argc, char *argv[]) {
 
     // 利用网络预测
     const vector<Sample> testDataSet = Utils::getTestData("../data/testdata.txt");
-    for (const Sample &testSample: testDataSet) {
-        vector<double> pred = net.predict(testSample.in);
-        cout << testSample.in[0] << " " << testSample.in[1] << " " << pred[0] << endl;
+    vector<Sample> predSet = net.predict(testDataSet);
+    for (auto &pred: predSet) {
+        pred.display();
     }
 
     return 0;

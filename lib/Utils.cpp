@@ -8,10 +8,6 @@
 #include "Utils.h"
 #include "Config.h"
 
-using std::cin;
-using std::cout;
-using std::endl;
-
 vector<double> Utils::getFileData(const string &filename) {
     vector<double> res;
 
@@ -25,11 +21,13 @@ vector<double> Utils::getFileData(const string &filename) {
         in.close();
     } else {
         // 未成功读取到数据文件
-        cout << "[Error] " << filename << "' not found." << endl;
+        printf("[ERROR] '%s' not found.\n", filename.c_str());
+//        cout << "[Error] " << filename << "' not found." << endl;
         // 输出当前的可执行文件路径
         char path[256];
         getcwd(path, sizeof(path));
-        cout << "Please check the path '" << filename << "' is relative to '" << path << "'." << endl;
+        printf("Please check the path '%s' is relative to '%s'.\n", filename.c_str(), path);
+//        cout << "Please check the path '" << filename << "' is relative to '" << path << "'." << endl;
         exit(1);
     }
 

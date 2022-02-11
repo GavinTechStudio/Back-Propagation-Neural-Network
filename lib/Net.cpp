@@ -5,10 +5,6 @@
 #include "Net.h"
 #include "Utils.h"
 #include <random>
-#include <iostream>
-
-using std::cout;
-using std::endl;
 
 Net::Net() {
     std::mt19937 rd;
@@ -205,18 +201,18 @@ bool Net::train(const vector<Sample> &trainDataSet) {
 
         // 判断是否停止训练
         if (max_loss < Config::threshold) {
-            cout << "Success in " << epoch << " epoch." << endl;
-            cout << "Final maximum error(loss): " << max_loss << endl;
+            printf("Training SUCCESS in %lu epochs.\n", epoch);
+            printf("Final maximum error(loss): %lf\n", max_loss);
             return true;
-        } else if (epoch % 10000 == 0) {
-            cout << "#epoch " << epoch << " max_loss: " << max_loss << endl;
+        } else if (epoch % 5000 == 0) {
+            printf("#epoch %-7lu - max_loss: %lf\n", epoch, max_loss);
         }
 
         // 各参数修正值作用
         adjust(trainDataSet.size());
     }
 
-    cout << "Failed within " << Config::max_epoch << " epoch." << endl;
+    printf("Failed within %lu epoch.", Config::max_epoch);
 
     return false;
 }
@@ -280,4 +276,20 @@ vector<Sample> Net::predict(const vector<Sample> &predictDataSet) {
 Node::Node(size_t nextLayerSize) {
     weight.resize(nextLayerSize);
     weight_delta.resize(nextLayerSize);
+}
+
+Sample::Sample() = default;
+
+Sample::Sample(const vector<double> &in, const vector<double> &out) {
+    this->in = in;
+    this->out = out;
+}
+
+void Sample::display() {
+    printf("input : ");
+    for (auto &x: in) printf("%lf ", x);
+    puts("");
+    printf("output: ");
+    for (auto &y: out) printf("%lf ", y);
+    puts("");
 }

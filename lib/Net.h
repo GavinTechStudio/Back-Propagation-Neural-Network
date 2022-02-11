@@ -13,12 +13,11 @@ using std::vector;
 struct Sample {
     vector<double> in, out;
 
-    Sample() = default;
+    Sample();
 
-    Sample(const vector<double> &in, const vector<double> &out) {
-        this->in = in;
-        this->out = out;
-    }
+    Sample(const vector<double> &in, const vector<double> &out);
+
+    void display();
 };
 
 struct Node {
@@ -29,12 +28,10 @@ struct Node {
 };
 
 class Net {
-public:
+private:
     Node *inputLayer[Config::INNODE];
     Node *hideLayer[Config::HIDENODE];
     Node *outputLayer[Config::OUTNODE];
-
-    Net();
 
     /**
      * 初始化所有的梯度积累，包括所有节点的 "有意义" 的 weight_delta 和 bias_delta
@@ -61,18 +58,22 @@ public:
     void backward(const vector<double> &out);
 
     /**
-     * 训练网络
-     * @param trainDataSet 训练数据集
-     * @return 是否训练成功（收敛）
-     */
-    bool train(const vector<Sample> &trainDataSet);
-
-    /**
      * 利用反向传播计算的修正值调整各参数值
      * 对于一个 batch 的修正值作用效果，采取平均值
      * @param batch_size batch 大小
      */
     void adjust(size_t batch_size);
+
+public:
+
+    Net();
+
+    /**
+     * 训练网络
+     * @param trainDataSet 训练数据集
+     * @return 是否训练成功（收敛）
+     */
+    bool train(const vector<Sample> &trainDataSet);
 
     /**
      * 利用训练好的网络进行预测
