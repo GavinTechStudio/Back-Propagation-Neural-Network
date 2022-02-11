@@ -48,7 +48,7 @@ vector<Sample> Utils::getTrainData(const string &filename) {
             trainSample.in.push_back(buffer[i + j]);
         // 读入训练样本输出
         for (size_t k = 0; k < Config::OUTNODE; ++k)
-            trainSample.out.push_back(buffer[i + k]);
+            trainSample.out.push_back(buffer[i + Config::INNODE + k]);
         // 将样本加入到训练集
         trainDataSet.push_back(trainSample);
     }
