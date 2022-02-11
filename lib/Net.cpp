@@ -106,7 +106,7 @@ void Net::forward() {
     }
 }
 
-double Net::CalculateLoss(const vector<double> &out) {
+double Net::calculateLoss(const vector<double> &out) {
     double loss = 0.f;
 
     // Loss = \frac{1}{2}\sum_k ( y_k - \hat{y_k} )^2
@@ -196,7 +196,7 @@ bool Net::train(const vector<Sample> &trainDataSet) {
             forward();
 
             // 记录 Loss
-            double loss = CalculateLoss(sample.out);
+            double loss = calculateLoss(sample.out);
             max_loss = std::max(max_loss, loss);
 
             // 反向传播
@@ -251,8 +251,8 @@ void Net::adjust(size_t batch_size) {
     }
 }
 
-vector<double> Net::predict(const vector<double> &in) {
-    vector<double> pred(Config::OUTNODE);
+Sample Net::predict(const vector<double> &in) {
+    vector<double> out(Config::OUTNODE);
 
     for (size_t i = 0; i < Config::INNODE; ++i)
         inputLayer[i]->value = in[i];
@@ -260,9 +260,21 @@ vector<double> Net::predict(const vector<double> &in) {
     forward();
 
     for (size_t k = 0; k < Config::OUTNODE; ++k)
-        pred[k] = outputLayer[k]->value;
+        out[k] = outputLayer[k]->value;
 
+    Sample pred = Sample(in, out);
     return pred;
+}
+
+vector<Sample> Net::predict(const vector<Sample> &predictDataSet) {
+    vector<Sample> predSet;
+
+    for (auto &sample: predictDataSet) {
+        Sample pred = predict(sample.in);
+        predSet.push_back(pred);
+    }
+
+    return predSet;
 }
 
 Node::Node(size_t nextLayerSize) {

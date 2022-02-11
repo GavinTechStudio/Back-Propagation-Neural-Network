@@ -12,6 +12,13 @@ using std::vector;
 
 struct Sample {
     vector<double> in, out;
+
+    Sample() = default;
+
+    Sample(const vector<double> &in, const vector<double> &out) {
+        this->in = in;
+        this->out = out;
+    }
 };
 
 struct Node {
@@ -45,7 +52,7 @@ public:
      * @param out 对应本组样本真实的输出向量/值
      * @return Loss 值
      */
-    double CalculateLoss(const vector<double> &out);
+    double calculateLoss(const vector<double> &out);
 
     /**
      * 反向传播
@@ -69,10 +76,18 @@ public:
 
     /**
      * 利用训练好的网络进行预测
-     * @param in 需要预测的输入向量
-     * @return 网络预测的输出向量/值
+     * @param in 预测样本的输入向量
+     * @return 通过网路预测后完整的预测样本（包含输入向量和输出向量）
      */
-    vector<double> predict(const vector<double> &in);
+    Sample predict(const vector<double> &in);
+
+    /**
+     * 利用训练好的网络进行预测
+     * @param predictDataSet 预测样本的vector容器
+     * @return 所有预测完成的样本的vector容器
+     */
+    vector<Sample> predict(const vector<Sample> &predictDataSet);
+
 };
 
 
