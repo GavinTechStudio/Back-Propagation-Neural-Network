@@ -46,8 +46,8 @@
 本部分文档包含大量数学公式，由于GitHub的README页面不支持数学公式渲染，推荐以下阅读方式：
 
 1. 如果您使用的是Chrome、Edge、Firefox等浏览器，可以安装插件[MathJax Plugin for Github](https://chrome.google.com/webstore/detail/mathjax-plugin-for-github/ioemnmodlmafdkllaclgeombjnmnbima)（需要访问chrome web store）。
-2. 使用[**PDF**](README.pdf)的方式进行阅读。
-2. 使用[**预渲染的静态网页**](https://gavintechstudio.github.io/Back-Propagation-Neural-Network/README.html)进行阅读（**推荐**）。
+2. 使用[**PDF**](README.pdf)的方式进行阅读（**对网络无要求**）。
+2. 使用[**预渲染的静态网页**](https://gavintechstudio.github.io/Back-Propagation-Neural-Network/README.html)进行阅读（**对网络要求高，推荐**）。
 
 ### 0. 神经网络结构图
 
