@@ -11,7 +11,9 @@
 ```
 .
 ├── CMakeLists.txt
+├── README.html
 ├── README.md
+├── README.pdf
 ├── data
 │   ├── testdata.txt
 │   └── traindata.txt
@@ -19,6 +21,7 @@
 │   └── formula.md
 ├── img
 │   └── net-info.png
+├── index.html
 ├── lib
 │   ├── Config.h
 │   ├── Net.cpp
@@ -27,7 +30,7 @@
 │   └── Utils.h
 └── main.cpp
 
-4 directories, 12 files
+4 directories, 15 files
 ```
 
 #### 主要文件
