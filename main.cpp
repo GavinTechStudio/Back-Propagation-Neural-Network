@@ -7,16 +7,16 @@ using std::endl;
 
 int main(int argc, char *argv[]) {
 
-    // 创建网络
+    // Create neural network object
     Net net;
 
-    // 读取训练数据
+    // Read training data
     const vector<Sample> trainDataSet = Utils::getTrainData("../data/traindata.txt");
 
-    // 训练网络
+    // Training neural network
     net.train(trainDataSet);
 
-    // 利用网络预测
+    // Prediction of samples using neural network
     const vector<Sample> testDataSet = Utils::getTestData("../data/testdata.txt");
     vector<Sample> predSet = net.predict(testDataSet);
     for (auto &pred: predSet) {
