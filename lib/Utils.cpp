@@ -43,10 +43,10 @@ vector<Sample> Utils::getTrainData(const string &filename) {
         Sample trainSample;
         // 读入训练样本输入
         for (size_t j = 0; j < Config::INNODE; ++j)
-            trainSample.in.push_back(buffer[i + j]);
+            trainSample.feature.push_back(buffer[i + j]);
         // 读入训练样本输出
         for (size_t k = 0; k < Config::OUTNODE; ++k)
-            trainSample.out.push_back(buffer[i + Config::INNODE + k]);
+            trainSample.label.push_back(buffer[i + Config::INNODE + k]);
         // 将样本加入到训练集
         trainDataSet.push_back(trainSample);
     }
@@ -62,7 +62,7 @@ vector<Sample> Utils::getTestData(const string &filename) {
         Sample testSample;
         // 读入测试样本输入
         for (size_t j = 0; j < Config::INNODE; ++j)
-            testSample.in.push_back(buffer[i + j]);
+            testSample.feature.push_back(buffer[i + j]);
         // 将样本加入到测试集
         testDataSet.push_back(testSample);
     }

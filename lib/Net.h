@@ -11,11 +11,11 @@
 using std::vector;
 
 struct Sample {
-    vector<double> in, out;
+    vector<double> feature, label;
 
     Sample();
 
-    Sample(const vector<double> &in, const vector<double> &out);
+    Sample(const vector<double> &feature, const vector<double> &label);
 
     void display();
 };
@@ -30,37 +30,40 @@ struct Node {
 class Net {
 private:
     Node *inputLayer[Config::INNODE];
-    Node *hideLayer[Config::HIDENODE];
+    Node *hiddenLayer[Config::HIDENODE];
     Node *outputLayer[Config::OUTNODE];
 
     /**
-     * 初始化所有的梯度积累，包括所有节点的 "有意义" 的 weight_delta 和 bias_delta
-     * 消除本次迭代的梯度修正，以便进行下一次的迭代
+     * Clear all gradient accumulation
+     *
+     * Set 'weight_delta'(the weight correction value) and
+     * 'bias_delta'(the bias correction value) to 0 of nodes
      */
     void grad_zero();
 
     /**
-     * 前向传播
+     * Forward propagation
      */
     void forward();
 
     /**
-     * 计算损失函数 Loss 值
-     * @param out 对应本组样本真实的输出向量/值
-     * @return Loss 值
+     * Calculate the value of Loss Function
+     * @param label the label of sample (vector / numeric)
+     * @return loss
      */
-    double calculateLoss(const vector<double> &out);
+    double calculateLoss(const vector<double> &label);
 
     /**
-     * 反向传播
-     * @param out 对应本组样本真实的输出向量/值
+     * Back propagation
+     * @param label label of sample (vector / numeric)
      */
-    void backward(const vector<double> &out);
+    void backward(const vector<double> &label);
 
     /**
-     * 利用反向传播计算的修正值调整各参数值
-     * 对于一个 batch 的修正值作用效果，采取平均值
-     * @param batch_size batch 大小
+     * Revise 'weight' and 'bias according to
+     * 'weight_delta'(the weight correction value) and
+     * 'bias_weight'(the bias correction value)
+     * @param batch_size
      */
     void adjust(size_t batch_size);
 
@@ -69,23 +72,23 @@ public:
     Net();
 
     /**
-     * 训练网络
-     * @param trainDataSet 训练数据集
-     * @return 是否训练成功（收敛）
+     * Training network with training data
+     * @param trainDataSet The sample set
+     * @return Training convergence
      */
     bool train(const vector<Sample> &trainDataSet);
 
     /**
-     * 利用训练好的网络进行预测
-     * @param in 预测样本的输入向量
-     * @return 通过网路预测后完整的预测样本（包含输入向量和输出向量）
+     * Using network to predict sample
+     * @param feature The feature of sample (vector)
+     * @return Sample with 'feature' and 'label'(predicted)
      */
-    Sample predict(const vector<double> &in);
+    Sample predict(const vector<double> &feature);
 
     /**
-     * 利用训练好的网络进行预测
-     * @param predictDataSet 预测样本的vector容器
-     * @return 所有预测完成的样本的vector容器
+     * Using network to predict the sample set
+     * @param predictDataSet The sample set
+     * @return The sample set, in which each sample has 'feature' and 'label'(predicted)
      */
     vector<Sample> predict(const vector<Sample> &predictDataSet);
 

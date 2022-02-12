@@ -12,162 +12,196 @@ Net::Net() {
 
     std::uniform_real_distribution<double> distribution(-1, 1);
 
-    // 初始化输入层
+    /**
+     * Initialize input layer
+     */
     for (size_t i = 0; i < Config::INNODE; ++i) {
         inputLayer[i] = new Node(Config::HIDENODE);
-        // 输入层的神经元节点不需要偏置值
-        // inputLayer[i]->bias = distribution(rd);
+
         for (size_t j = 0; j < Config::HIDENODE; ++j) {
-            // 初始化输入层第 i 个神经元到隐藏层第 j 个神经元的权重
+
+            // Initialize 'weight'(the weight value)
+            // from the i-th node feature the input layer to the j-th node feature the hidden layer
             inputLayer[i]->weight[j] = distribution(rd);
-            // 初始化输入层第 i 个神经元到隐藏层第 j 个神经元的权重修正值
+
+            // Initialize 'weight_delta'(the weight correction value)
+            // from the i-th node feature the input layer to the j-th node feature the hidden layer
             inputLayer[i]->weight_delta[j] = 0.f;
         }
     }
 
-    // 初始化隐藏层
+    /**
+     * Initialize hidden layer
+     */
     for (size_t j = 0; j < Config::HIDENODE; ++j) {
-        hideLayer[j] = new Node(Config::OUTNODE);
-        // 初始化隐藏层神经元系节点偏置值
-        hideLayer[j]->bias = distribution(rd);
-        // 初始化隐藏层神经元系节点偏置值修正值
-        hideLayer[j]->bias_delta = 0.f;
+        hiddenLayer[j] = new Node(Config::OUTNODE);
+
+        // Initialize 'bias'(the bias value)
+        // of the j-th node feature the hidden layer
+        hiddenLayer[j]->bias = distribution(rd);
+
+        // Initialize 'bias_delta'(the bias correction value)
+        // of the j-th node feature the hidden layer
+        hiddenLayer[j]->bias_delta = 0.f;
         for (size_t k = 0; k < Config::OUTNODE; ++k) {
-            // 初始化隐藏层第 j 个神经元到输出层第 k 个神经元的权重
-            hideLayer[j]->weight[k] = distribution(rd);
-            // 初始化隐藏层第 j 个神经元到输出层第 k 个神经元的权重修正值
-            hideLayer[j]->weight_delta[k] = 0.f;
+
+            // Initialize 'weight'(the weight value)
+            // from the j-th node feature the hidden layer to the k-th node feature the output layer
+            hiddenLayer[j]->weight[k] = distribution(rd);
+
+            // Initialize 'weight_delta'(the weight correction value)
+            // from the j-th node feature the hidden layer to the k-th node feature the output layer
+            hiddenLayer[j]->weight_delta[k] = 0.f;
         }
     }
 
-    // 初始化输出层
+    // Initialize output layer
     for (size_t k = 0; k < Config::OUTNODE; ++k) {
         outputLayer[k] = new Node(0);
-        // 初始化输出层神经元系节点偏置值
+
+        // Initialize 'bias'(the bias value)
+        // of the k-th node feature the output layer
         outputLayer[k]->bias = distribution(rd);
-        // 初始化输出层神经元系节点偏置值偏置值
+
+        // Initialize 'bias_delta'(the bias correction value)
+        // of the k-th node feature the output layer
         outputLayer[k]->bias_delta = 0.f;
     }
 }
 
 void Net::grad_zero() {
 
-    // 清零输入层所有节点的 weight_delta
-    for (auto &node_input: inputLayer) {
-        node_input->weight_delta.assign(node_input->weight_delta.size(), 0.f);
+    // Clear 'weight_delta'(the weight correction value)
+    // of all nodes feature the input layer
+    for (auto &nodeOfInputLayer: inputLayer) {
+        nodeOfInputLayer->weight_delta.assign(nodeOfInputLayer->weight_delta.size(), 0.f);
     }
 
-    // 清零隐藏层所有节点的 bias_delta 和 weight_delta
-    for (auto &node_hide: hideLayer) {
-        node_hide->bias_delta = 0.f;
-        node_hide->weight_delta.assign(node_hide->weight_delta.size(), 0.f);
+    // Clear 'weight_delta'(the weight correction value) and 'bias_delta'(the bias correction value)
+    // of all nodes feature the hidden layer
+    for (auto &nodeOfHiddenLayer: hiddenLayer) {
+        nodeOfHiddenLayer->bias_delta = 0.f;
+        nodeOfHiddenLayer->weight_delta.assign(nodeOfHiddenLayer->weight_delta.size(), 0.f);
     }
 
-    // 清零输出层所有节点的 bias_delta
-    for (auto &node_output: outputLayer) {
-        node_output->bias_delta = 0.f;
+    // Clear 'bias_delta'(the bias correction value)
+    // of all nodes feature the hidden layer
+    for (auto &nodeOfOutputLayer: outputLayer) {
+        nodeOfOutputLayer->bias_delta = 0.f;
     }
 }
 
 void Net::forward() {
 
-    // 输入层向隐藏层传播
-    // h_j = \sigma( \sum_i x_i w_{ij} - \beta_j )
+    /**
+     * The input layer propagate forward to the hidden layer.
+     * MathJax formula: h_j = \sigma( \sum_i x_i w_{ij} - \beta_j )
+     */
     for (size_t j = 0; j < Config::HIDENODE; ++j) {
-        // 计算第 j 个隐藏层节点的值
         double sum = 0;
         for (size_t i = 0; i < Config::INNODE; ++i) {
-            // 第 i 个输入层节点对第 j 个隐藏层节点的贡献
             sum += inputLayer[i]->value * inputLayer[i]->weight[j];
         }
-        sum -= hideLayer[j]->bias;
+        sum -= hiddenLayer[j]->bias;
 
-        // 激活函数选用 sigmoid
-        hideLayer[j]->value = Utils::sigmoid(sum);
+        hiddenLayer[j]->value = Utils::sigmoid(sum);
     }
 
-    // 隐藏层向输出层传播
-    // \hat{y_k} = \sigma( \sum_j h_j v_{jk} - \lambda_k )
+    /**
+     * The hidden layer propagate forward to the output layer.
+     * MathJax formula: \hat{y_k} = \sigma( \sum_j h_j v_{jk} - \lambda_k )
+     */
     for (size_t k = 0; k < Config::OUTNODE; ++k) {
-        // 计算第 k 个输出层节点的值
         double sum = 0;
         for (size_t j = 0; j < Config::HIDENODE; ++j) {
-            // 第 j 个隐藏层节点对第 k 个输出层节点的恭喜
-            sum += hideLayer[j]->value * hideLayer[j]->weight[k];
+            sum += hiddenLayer[j]->value * hiddenLayer[j]->weight[k];
         }
         sum -= outputLayer[k]->bias;
 
-        // 激活函数选用 sigmoid
         outputLayer[k]->value = Utils::sigmoid(sum);
     }
 }
 
-double Net::calculateLoss(const vector<double> &out) {
+double Net::calculateLoss(const vector<double> &label) {
     double loss = 0.f;
 
-    // Loss = \frac{1}{2}\sum_k ( y_k - \hat{y_k} )^2
+    /**
+     * MathJax formula: Loss = \frac{1}{2}\sum_k ( y_k - \hat{y_k} )^2
+     */
     for (size_t k = 0; k < Config::OUTNODE; ++k) {
-        double tmp = std::fabs(outputLayer[k]->value - out[k]);
+        double tmp = std::fabs(outputLayer[k]->value - label[k]);
         loss += tmp * tmp / 2;
     }
 
     return loss;
 }
 
-void Net::backward(const vector<double> &out) {
+void Net::backward(const vector<double> &label) {
 
-    // 计算输出层节点的偏置值修正值
-    // \Delta \lambda_k = - \eta (y_k - \hat{y_k}) \hat{y_k} (1 - \hat{y_k})
+    /**
+     * Calculate 'bias_delta'(the bias correction value)
+     * of the k-th node feature the output layer
+     * MathJax formula: \Delta \lambda_k = - \eta (y_k - \hat{y_k}) \hat{y_k} (1 - \hat{y_k})
+     */
     for (size_t k = 0; k < Config::OUTNODE; ++k) {
         double bias_delta =
-                -(out[k] - outputLayer[k]->value)
+                -(label[k] - outputLayer[k]->value)
                 * outputLayer[k]->value * (1.0 - outputLayer[k]->value);
 
         outputLayer[k]->bias_delta += bias_delta;
     }
 
-    // 计算隐藏层节点到输出层节点权重修正值
-    // \Delta v_{jk} = \eta ( y_k - \hat{y_k} ) \hat{y_k} ( 1 - \hat{y_k} ) h_j
+    /**
+     * Calculate 'weight_delta'(the weight correction value)
+     * from the j-th node feature the hidden layer to the k-th node feature the output layer
+     * MathJax formula: \Delta v_{jk} = \eta ( y_k - \hat{y_k} ) \hat{y_k} ( 1 - \hat{y_k} ) h_j
+     */
     for (size_t j = 0; j < Config::HIDENODE; ++j) {
         for (size_t k = 0; k < Config::OUTNODE; ++k) {
             double weight_delta =
-                    (out[k] - outputLayer[k]->value)
+                    (label[k] - outputLayer[k]->value)
                     * outputLayer[k]->value * (1.0 - outputLayer[k]->value)
-                    * hideLayer[j]->value;
+                    * hiddenLayer[j]->value;
 
-            hideLayer[j]->weight_delta[k] += weight_delta;
+            hiddenLayer[j]->weight_delta[k] += weight_delta;
         }
     }
 
-    // 计算隐藏层节点的偏置值修正值
-    // \Delta \beta_j = - \eta \sum_k ( y_k - \hat{y_k} ) \hat{y_k} ( 1 - \hat{y_k} ) v_{jk} h_j ( 1 - h_j )
+    /**
+     * Calculate 'bias_delta'(the bias correction value)
+     * of the j-th node feature the hidden layer
+     * MathJax formula: \Delta \beta_j = - \eta \sum_k ( y_k - \hat{y_k} ) \hat{y_k} ( 1 - \hat{y_k} ) v_{jk} h_j ( 1 - h_j )
+     */
     for (size_t j = 0; j < Config::HIDENODE; ++j) {
         double bias_delta = 0.f;
         for (size_t k = 0; k < Config::OUTNODE; ++k) {
             bias_delta +=
-                    -(out[k] - outputLayer[k]->value)
+                    -(label[k] - outputLayer[k]->value)
                     * outputLayer[k]->value * (1.0 - outputLayer[k]->value)
-                    * hideLayer[j]->weight[k];
+                    * hiddenLayer[j]->weight[k];
         }
         bias_delta *=
-                hideLayer[j]->value * (1.0 - hideLayer[j]->value);
+                hiddenLayer[j]->value * (1.0 - hiddenLayer[j]->value);
 
-        hideLayer[j]->bias_delta += bias_delta;
+        hiddenLayer[j]->bias_delta += bias_delta;
     }
 
-    // 计算输入层节点到隐藏层节点权重修正值
-    // \Delta w_{ij} = \eta \sum_k ( y_k - \hat{y_k} ) \hat{y_k} ( 1 - \hat{y_k} ) v_{jk} h_j ( 1 - h_j ) x_i
+    /**
+     * Calculate 'weight_delta'(the weight correction value)
+     * from the i-th node feature the input layer to the j-th node feature the hidden layer
+     * MathJax formula: \Delta w_{ij} = \eta \sum_k ( y_k - \hat{y_k} ) \hat{y_k} ( 1 - \hat{y_k} ) v_{jk} h_j ( 1 - h_j ) x_i
+     */
     for (size_t i = 0; i < Config::INNODE; ++i) {
         for (size_t j = 0; j < Config::HIDENODE; ++j) {
             double weight_delta = 0.f;
             for (size_t k = 0; k < Config::OUTNODE; ++k) {
                 weight_delta +=
-                        (out[k] - outputLayer[k]->value)
+                        (label[k] - outputLayer[k]->value)
                         * outputLayer[k]->value * (1.0 - outputLayer[k]->value)
-                        * hideLayer[j]->weight[k];
+                        * hiddenLayer[j]->weight[k];
             }
             weight_delta *=
-                    hideLayer[j]->value * (1.0 - hideLayer[j]->value)
+                    hiddenLayer[j]->value * (1.0 - hiddenLayer[j]->value)
                     * inputLayer[i]->value;
 
             inputLayer[i]->weight_delta[j] += weight_delta;
@@ -177,38 +211,38 @@ void Net::backward(const vector<double> &out) {
 
 bool Net::train(const vector<Sample> &trainDataSet) {
     for (size_t epoch = 0; epoch <= Config::max_epoch; ++epoch) {
-        // 清零上一个 epoch 的梯度
+
         grad_zero();
 
         double max_loss = 0.f;
 
-        for (const Sample &sample: trainDataSet) {
+        for (const Sample &trainSample: trainDataSet) {
 
-            // 将本组样本加载到网络中
+            // Load trainSample into the network
             for (size_t i = 0; i < Config::INNODE; ++i)
-                inputLayer[i]->value = sample.in[i];
+                inputLayer[i]->value = trainSample.feature[i];
 
-            // 前向传播
+            // Forward propagation
             forward();
 
-            // 记录 Loss
-            double loss = calculateLoss(sample.out);
+            // Calculate 'loss'
+            double loss = calculateLoss(trainSample.label);
             max_loss = std::max(max_loss, loss);
 
-            // 反向传播
-            backward(sample.out);
+            // Back propagation
+            backward(trainSample.label);
         }
 
-        // 判断是否停止训练
+        // Deciding whether to stop training
         if (max_loss < Config::threshold) {
-            printf("Training SUCCESS in %lu epochs.\n", epoch);
+            printf("Training SUCCESS feature %lu epochs.\n", epoch);
             printf("Final maximum error(loss): %lf\n", max_loss);
             return true;
         } else if (epoch % 5000 == 0) {
             printf("#epoch %-7lu - max_loss: %lf\n", epoch, max_loss);
         }
 
-        // 各参数修正值作用
+        // Revise 'weight' and 'bias' of each node
         adjust(trainDataSet.size());
     }
 
@@ -223,42 +257,63 @@ void Net::adjust(size_t batch_size) {
 
     for (size_t i = 0; i < Config::INNODE; ++i) {
         for (size_t j = 0; j < Config::HIDENODE; ++j) {
-            // 调整输入层节点到隐藏层节点权重
+
+            /**
+             * Revise 'weight' according to 'weight_delta'(the weight correction value)
+             * from the i-th node feature the input layer to the j-th node feature the hidden layer
+             */
             inputLayer[i]->weight[j] +=
                     Config::lr * inputLayer[i]->weight_delta[j] / batch_size_double;
+
         }
     }
 
     for (size_t j = 0; j < Config::HIDENODE; ++j) {
-        // 调整隐藏层节点偏置值
-        hideLayer[j]->bias +=
-                Config::lr * hideLayer[j]->bias_delta / batch_size_double;
+
+        /**
+         * Revise 'bias' according to 'bias_delta'(the bias correction value)
+         * of the j-th node feature the hidden layer
+         */
+        hiddenLayer[j]->bias +=
+                Config::lr * hiddenLayer[j]->bias_delta / batch_size_double;
+
         for (size_t k = 0; k < Config::OUTNODE; ++k) {
-            // 调整隐藏层节点到输出层节点权重
-            hideLayer[j]->weight[k] +=
-                    Config::lr * hideLayer[j]->weight_delta[k] / batch_size_double;
+
+            /**
+             * Revise 'weight' according to 'weight_delta'(the weight correction value)
+             * from the j-th node feature the hidden layer to the k-th node feature the output layer
+             */
+            hiddenLayer[j]->weight[k] +=
+                    Config::lr * hiddenLayer[j]->weight_delta[k] / batch_size_double;
+
         }
     }
 
     for (size_t k = 0; k < Config::OUTNODE; ++k) {
-        // 调整输出层节点偏置值
+
+        /**
+         * Revise 'bias' according to 'bias_weight'(the bias correction value)
+         * of the k-th node feature the output layer
+         */
         outputLayer[k]->bias +=
                 Config::lr * outputLayer[k]->bias_delta / batch_size_double;
+
     }
 }
 
-Sample Net::predict(const vector<double> &in) {
-    vector<double> out(Config::OUTNODE);
+Sample Net::predict(const vector<double> &feature) {
 
+    // load sample into the network
     for (size_t i = 0; i < Config::INNODE; ++i)
-        inputLayer[i]->value = in[i];
+        inputLayer[i]->value = feature[i];
 
     forward();
 
+    vector<double> label(Config::OUTNODE);
     for (size_t k = 0; k < Config::OUTNODE; ++k)
-        out[k] = outputLayer[k]->value;
+        label[k] = outputLayer[k]->value;
 
-    Sample pred = Sample(in, out);
+    Sample pred = Sample(feature, label);
     return pred;
 }
 
@@ -266,7 +321,7 @@ vector<Sample> Net::predict(const vector<Sample> &predictDataSet) {
     vector<Sample> predSet;
 
     for (auto &sample: predictDataSet) {
-        Sample pred = predict(sample.in);
+        Sample pred = predict(sample.feature);
         predSet.push_back(pred);
     }
 
@@ -280,16 +335,16 @@ Node::Node(size_t nextLayerSize) {
 
 Sample::Sample() = default;
 
-Sample::Sample(const vector<double> &in, const vector<double> &out) {
-    this->in = in;
-    this->out = out;
+Sample::Sample(const vector<double> &feature, const vector<double> &label) {
+    this->feature = feature;
+    this->label = label;
 }
 
 void Sample::display() {
     printf("input : ");
-    for (auto &x: in) printf("%lf ", x);
+    for (auto &x: feature) printf("%lf ", x);
     puts("");
     printf("output: ");
-    for (auto &y: out) printf("%lf ", y);
+    for (auto &y: label) printf("%lf ", y);
     puts("");
 }
