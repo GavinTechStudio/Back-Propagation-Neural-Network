@@ -9,17 +9,9 @@
 ```
 .
 ├── CMakeLists.txt
-├── README.html
-├── README.md
-├── README.pdf
 ├── data
 │   ├── testdata.txt
 │   └── traindata.txt
-├── docs
-│   └── formula.md
-├── img
-│   └── net-info.png
-├── index.html
 ├── lib
 │   ├── Config.h
 │   ├── Net.cpp
@@ -27,8 +19,6 @@
 │   ├── Utils.cpp
 │   └── Utils.h
 └── main.cpp
-
-4 directories, 15 files
 ```
 
 #### 主要文件
@@ -76,9 +66,9 @@ for (size_t j = 0; j < Config::HIDENODE; ++j) {
         sum += inputLayer[i]->value * 
                inputLayer[i]->weight[j];
     }
-    sum -= hideLayer[j]->bias;
+    sum -= hiddenLayer[j]->bias;
   
-    hideLayer[j]->value = Utils::sigmoid(sum);
+    hiddenLayer[j]->value = Utils::sigmoid(sum);
 }
 ```
 
@@ -96,8 +86,8 @@ $$
 for (size_t k = 0; k < Config::OUTNODE; ++k) {
     double sum = 0;
     for (size_t j = 0; j < Config::HIDENODE; ++j) {
-        sum += hideLayer[j]->value * 
-               hideLayer[j]->weight[k];
+        sum += hiddenLayer[j]->value * 
+               hiddenLayer[j]->weight[k];
     }
     sum -= outputLayer[k]->bias;
     
@@ -119,7 +109,7 @@ $$
 double loss = 0.f;
 
 for (size_t k = 0; k < Config::OUTNODE; ++k) {
-    double tmp = std::fabs(outputLayer[k]->value - out[k]);
+    double tmp = std::fabs(outputLayer[k]->value - label[k]);
     los += tmp * tmp / 2;
 }
 ```
@@ -141,7 +131,7 @@ $$
 ```C++
 for (size_t k = 0; k < Config::OUTNODE; ++k) {
     double bias_delta = 
-        -(out[k] - outputLayer[k]->value) *
+        -(label[k] - outputLayer[k]->value) *
         outputLayer[k]->value *
         (1.0 - outputLayer[k]->value);
     
@@ -163,12 +153,12 @@ $$
 for (size_t j = 0; j < Config::HIDENODE; ++j) {
     for (size_t k = 0; k < Config::OUTNODE; ++k) {
         double weight_delta =
-            (out[k] - outputLayer[k]->value) * 
+            (label[k] - outputLayer[k]->value) * 
             outputLayer[k]->value * 
             (1.0 - outputLayer[k]->value) * 
-            hideLayer[j]->value;
+            hiddenLayer[j]->value;
 
-		hideLayer[j]->weight_delta[k] += weight_delta;
+		hiddenLayer[j]->weight_delta[k] += weight_delta;
     }
 }
 ```
@@ -188,16 +178,16 @@ for (size_t j = 0; j < Config::HIDENODE; ++j) {
 	double bias_delta = 0.f;
 	for (size_t k = 0; k < Config::OUTNODE; ++k) {
 		bias_delta += 
-            -(out[k] - outputLayer[k]->value) * 
+            -(label[k] - outputLayer[k]->value) * 
             outputLayer[k]->value * 
             (1.0 - outputLayer[k]->value) * 
-            hideLayer[j]->weight[k];
+            hiddenLayer[j]->weight[k];
 	}
 	bias_delta *= 
-        hideLayer[j]->value * 
-        (1.0 - hideLayer[j]->value);
+        hiddenLayer[j]->value * 
+        (1.0 - hiddenLayer[j]->value);
 
-	hideLayer[j]->bias_delta += bias_delta;
+	hiddenLayer[j]->bias_delta += bias_delta;
 }
 ```
 
@@ -217,14 +207,14 @@ for (size_t i = 0; i < Config::INNODE; ++i) {
 		double weight_delta = 0.f;
 		for (size_t k = 0; k < Config::OUTNODE; ++k) {
 			weight_delta +=
-                (out[k] - outputLayer[k]->value) * 
+                (label[k] - outputLayer[k]->value) * 
                 outputLayer[k]->value * 
                 (1.0 - outputLayer[k]->value) * 
-                hideLayer[j]->weight[k];
+                hiddenLayer[j]->weight[k];
         }
 		weight_delta *=
-            hideLayer[j]->value * 
-            (1.0 - hideLayer[j]->value) * 
+            hiddenLayer[j]->value * 
+            (1.0 - hiddenLayer[j]->value) * 
             inputLayer[i]->value;
 
 		inputLayer[i]->weight_delta[j] += weight_delta;
