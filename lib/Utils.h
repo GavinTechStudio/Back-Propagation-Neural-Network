@@ -1,6 +1,8 @@
-//
-// Created by gavin on 2022/2/10.
-//
+/**
+ * @author  Gavin
+ * @date    2022/2/10
+ * @Email   gavinsun0921@foxmail.com
+ */
 
 #ifndef BPNN_UTILS_H
 #define BPNN_UTILS_H

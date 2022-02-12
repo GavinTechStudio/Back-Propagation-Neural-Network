@@ -1,6 +1,8 @@
-//
-// Created by gavin on 2022/2/10.
-//
+/**
+ * @author  Gavin
+ * @date    2022/2/10
+ * @Email   gavinsun0921@foxmail.com
+ */
 
 #ifndef BPNN_NET_H
 #define BPNN_NET_H
@@ -29,9 +31,9 @@ struct Node {
 
 class Net {
 private:
-    Node *inputLayer[Config::INNODE];
-    Node *hiddenLayer[Config::HIDENODE];
-    Node *outputLayer[Config::OUTNODE];
+    Node *inputLayer[Config::INNODE]{};
+    Node *hiddenLayer[Config::HIDENODE]{};
+    Node *outputLayer[Config::OUTNODE]{};
 
     /**
      * Clear all gradient accumulation
