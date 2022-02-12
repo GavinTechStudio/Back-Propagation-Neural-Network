@@ -20,14 +20,12 @@ vector<double> Utils::getFileData(const string &filename) {
         }
         in.close();
     } else {
-        // 未成功读取到数据文件
+        // Data file not found
         printf("[ERROR] '%s' not found.\n", filename.c_str());
-//        cout << "[Error] " << filename << "' not found." << endl;
-        // 输出当前的可执行文件路径
+        // Prompt the correct storage path of data file
         char path[256];
         getcwd(path, sizeof(path));
         printf("Please check the path '%s' is relative to '%s'.\n", filename.c_str(), path);
-//        cout << "Please check the path '" << filename << "' is relative to '" << path << "'." << endl;
         exit(1);
     }
 
@@ -41,13 +39,13 @@ vector<Sample> Utils::getTrainData(const string &filename) {
 
     for (size_t i = 0; i < buffer.size(); i += Config::INNODE + Config::OUTNODE) {
         Sample trainSample;
-        // 读入训练样本输入
+        // Read in training sample 'feature'
         for (size_t j = 0; j < Config::INNODE; ++j)
             trainSample.feature.push_back(buffer[i + j]);
-        // 读入训练样本输出
+        // Read in training sample 'label'
         for (size_t k = 0; k < Config::OUTNODE; ++k)
             trainSample.label.push_back(buffer[i + Config::INNODE + k]);
-        // 将样本加入到训练集
+        // Add samples to the 'trainDataSet'
         trainDataSet.push_back(trainSample);
     }
     return trainDataSet;
@@ -60,10 +58,10 @@ vector<Sample> Utils::getTestData(const string &filename) {
 
     for (size_t i = 0; i < buffer.size(); i += Config::INNODE) {
         Sample testSample;
-        // 读入测试样本输入
+        // Read in test sample 'feature'
         for (size_t j = 0; j < Config::INNODE; ++j)
             testSample.feature.push_back(buffer[i + j]);
-        // 将样本加入到测试集
+        // Add samples to the 'testDataSet'
         testDataSet.push_back(testSample);
     }
 
