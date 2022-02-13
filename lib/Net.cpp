@@ -23,11 +23,11 @@ Net::Net() {
         for (size_t j = 0; j < Config::HIDENODE; ++j) {
 
             // Initialize 'weight'(the weight value)
-            // from the i-th node feature the input layer to the j-th node feature the hidden layer
+            // from the i-th node in the input layer to the j-th node in the hidden layer
             inputLayer[i]->weight[j] = distribution(rd);
 
             // Initialize 'weight_delta'(the weight correction value)
-            // from the i-th node feature the input layer to the j-th node feature the hidden layer
+            // from the i-th node in the input layer to the j-th node in the hidden layer
             inputLayer[i]->weight_delta[j] = 0.f;
         }
     }
@@ -39,20 +39,20 @@ Net::Net() {
         hiddenLayer[j] = new Node(Config::OUTNODE);
 
         // Initialize 'bias'(the bias value)
-        // of the j-th node feature the hidden layer
+        // of the j-th node in the hidden layer
         hiddenLayer[j]->bias = distribution(rd);
 
         // Initialize 'bias_delta'(the bias correction value)
-        // of the j-th node feature the hidden layer
+        // of the j-th node in the hidden layer
         hiddenLayer[j]->bias_delta = 0.f;
         for (size_t k = 0; k < Config::OUTNODE; ++k) {
 
             // Initialize 'weight'(the weight value)
-            // from the j-th node feature the hidden layer to the k-th node feature the output layer
+            // from the j-th node in the hidden layer to the k-th node in the output layer
             hiddenLayer[j]->weight[k] = distribution(rd);
 
             // Initialize 'weight_delta'(the weight correction value)
-            // from the j-th node feature the hidden layer to the k-th node feature the output layer
+            // from the j-th node in the hidden layer to the k-th node in the output layer
             hiddenLayer[j]->weight_delta[k] = 0.f;
         }
     }
@@ -62,11 +62,11 @@ Net::Net() {
         outputLayer[k] = new Node(0);
 
         // Initialize 'bias'(the bias value)
-        // of the k-th node feature the output layer
+        // of the k-th node in the output layer
         outputLayer[k]->bias = distribution(rd);
 
         // Initialize 'bias_delta'(the bias correction value)
-        // of the k-th node feature the output layer
+        // of the k-th node in the output layer
         outputLayer[k]->bias_delta = 0.f;
     }
 }
@@ -74,20 +74,20 @@ Net::Net() {
 void Net::grad_zero() {
 
     // Clear 'weight_delta'(the weight correction value)
-    // of all nodes feature the input layer
+    // of all nodes in the input layer
     for (auto &nodeOfInputLayer: inputLayer) {
         nodeOfInputLayer->weight_delta.assign(nodeOfInputLayer->weight_delta.size(), 0.f);
     }
 
     // Clear 'weight_delta'(the weight correction value) and 'bias_delta'(the bias correction value)
-    // of all nodes feature the hidden layer
+    // of all nodes in the hidden layer
     for (auto &nodeOfHiddenLayer: hiddenLayer) {
         nodeOfHiddenLayer->bias_delta = 0.f;
         nodeOfHiddenLayer->weight_delta.assign(nodeOfHiddenLayer->weight_delta.size(), 0.f);
     }
 
     // Clear 'bias_delta'(the bias correction value)
-    // of all nodes feature the hidden layer
+    // of all nodes in the hidden layer
     for (auto &nodeOfOutputLayer: outputLayer) {
         nodeOfOutputLayer->bias_delta = 0.f;
     }
@@ -142,7 +142,7 @@ void Net::backward(const vector<double> &label) {
 
     /**
      * Calculate 'bias_delta'(the bias correction value)
-     * of the k-th node feature the output layer
+     * of the k-th node in the output layer
      * MathJax formula: \Delta \lambda_k = - \eta (y_k - \hat{y_k}) \hat{y_k} (1 - \hat{y_k})
      */
     for (size_t k = 0; k < Config::OUTNODE; ++k) {
@@ -155,7 +155,7 @@ void Net::backward(const vector<double> &label) {
 
     /**
      * Calculate 'weight_delta'(the weight correction value)
-     * from the j-th node feature the hidden layer to the k-th node feature the output layer
+     * from the j-th node in the hidden layer to the k-th node in the output layer
      * MathJax formula: \Delta v_{jk} = \eta ( y_k - \hat{y_k} ) \hat{y_k} ( 1 - \hat{y_k} ) h_j
      */
     for (size_t j = 0; j < Config::HIDENODE; ++j) {
@@ -171,7 +171,7 @@ void Net::backward(const vector<double> &label) {
 
     /**
      * Calculate 'bias_delta'(the bias correction value)
-     * of the j-th node feature the hidden layer
+     * of the j-th node in the hidden layer
      * MathJax formula: \Delta \beta_j = - \eta \sum_k ( y_k - \hat{y_k} ) \hat{y_k} ( 1 - \hat{y_k} ) v_{jk} h_j ( 1 - h_j )
      */
     for (size_t j = 0; j < Config::HIDENODE; ++j) {
@@ -190,7 +190,7 @@ void Net::backward(const vector<double> &label) {
 
     /**
      * Calculate 'weight_delta'(the weight correction value)
-     * from the i-th node feature the input layer to the j-th node feature the hidden layer
+     * from the i-th node in the input layer to the j-th node in the hidden layer
      * MathJax formula: \Delta w_{ij} = \eta \sum_k ( y_k - \hat{y_k} ) \hat{y_k} ( 1 - \hat{y_k} ) v_{jk} h_j ( 1 - h_j ) x_i
      */
     for (size_t i = 0; i < Config::INNODE; ++i) {
@@ -220,7 +220,7 @@ bool Net::train(const vector<Sample> &trainDataSet) {
 
         for (const Sample &trainSample: trainDataSet) {
 
-            // Load trainSample into the network
+            // Load trainSample's feature into the network
             for (size_t i = 0; i < Config::INNODE; ++i)
                 inputLayer[i]->value = trainSample.feature[i];
 
@@ -233,11 +233,12 @@ bool Net::train(const vector<Sample> &trainDataSet) {
 
             // Back propagation
             backward(trainSample.label);
+
         }
 
         // Deciding whether to stop training
         if (max_loss < Config::threshold) {
-            printf("Training SUCCESS feature %lu epochs.\n", epoch);
+            printf("Training SUCCESS in %lu epochs.\n", epoch);
             printf("Final maximum error(loss): %lf\n", max_loss);
             return true;
         } else if (epoch % 5000 == 0) {
@@ -245,7 +246,7 @@ bool Net::train(const vector<Sample> &trainDataSet) {
         }
 
         // Revise 'weight' and 'bias' of each node
-        adjust(trainDataSet.size());
+        revise(trainDataSet.size());
     }
 
     printf("Failed within %lu epoch.", Config::max_epoch);
@@ -253,7 +254,7 @@ bool Net::train(const vector<Sample> &trainDataSet) {
     return false;
 }
 
-void Net::adjust(size_t batch_size) {
+void Net::revise(size_t batch_size) {
 
     auto batch_size_double = (double) batch_size;
 
@@ -262,7 +263,7 @@ void Net::adjust(size_t batch_size) {
 
             /**
              * Revise 'weight' according to 'weight_delta'(the weight correction value)
-             * from the i-th node feature the input layer to the j-th node feature the hidden layer
+             * from the i-th node in the input layer to the j-th node in the hidden layer
              */
             inputLayer[i]->weight[j] +=
                     Config::lr * inputLayer[i]->weight_delta[j] / batch_size_double;
@@ -274,7 +275,7 @@ void Net::adjust(size_t batch_size) {
 
         /**
          * Revise 'bias' according to 'bias_delta'(the bias correction value)
-         * of the j-th node feature the hidden layer
+         * of the j-th node in the hidden layer
          */
         hiddenLayer[j]->bias +=
                 Config::lr * hiddenLayer[j]->bias_delta / batch_size_double;
@@ -283,7 +284,7 @@ void Net::adjust(size_t batch_size) {
 
             /**
              * Revise 'weight' according to 'weight_delta'(the weight correction value)
-             * from the j-th node feature the hidden layer to the k-th node feature the output layer
+             * from the j-th node in the hidden layer to the k-th node in the output layer
              */
             hiddenLayer[j]->weight[k] +=
                     Config::lr * hiddenLayer[j]->weight_delta[k] / batch_size_double;
@@ -295,7 +296,7 @@ void Net::adjust(size_t batch_size) {
 
         /**
          * Revise 'bias' according to 'bias_weight'(the bias correction value)
-         * of the k-th node feature the output layer
+         * of the k-th node in the output layer
          */
         outputLayer[k]->bias +=
                 Config::lr * outputLayer[k]->bias_delta / batch_size_double;

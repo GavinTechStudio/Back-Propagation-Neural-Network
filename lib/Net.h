@@ -67,7 +67,7 @@ private:
      * 'bias_weight'(the bias correction value)
      * @param batch_size
      */
-    void adjust(size_t batch_size);
+    void revise(size_t batch_size);
 
 public:
 
