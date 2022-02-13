@@ -1,8 +1,8 @@
 # Back-Propagation-Neural-Network
 
-[![](https://badgen.net/badge/github/BPNN?icon&label=GitHub)](https://github.com/GavinTechStudio/Back-Propagation-Neural-Network) ![](https://img.shields.io/badge/support-C%2B%2B11%20or%20later-blue?style=flat&logo=C%2B%2B) ![](https://img.shields.io/badge/support-v2.8.12%20or%20later-blue?style=flat&logo=CMake) [![update](https://img.shields.io/github/last-commit/GavinTechStudio/Back-Propagation-Neural-Network)](https://github.com/GavinTechStudio/Back-Propagation-Neural-Network) [![pages-build-deployment](https://github.com/GavinTechStudio/Back-Propagation-Neural-Network/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/GavinTechStudio/Back-Propagation-Neural-Network/actions/workflows/pages/pages-build-deployment) 
+[![BPNN](https://badgen.net/badge/github/BPNN?icon&label=GitHub)](https://github.com/GavinTechStudio/Back-Propagation-Neural-Network) ![C++](https://img.shields.io/badge/support-C%2B%2B11%20or%20later-blue?style=flat&logo=cplusplus) ![CMake](https://img.shields.io/badge/support-v2.8.12%20or%20later-blue?style=flat&logo=cmake) [![update](https://img.shields.io/github/last-commit/GavinTechStudio/Back-Propagation-Neural-Network)](https://github.com/GavinTechStudio/Back-Propagation-Neural-Network) [![pages-build-deployment](https://github.com/GavinTechStudio/Back-Propagation-Neural-Network/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/GavinTechStudio/Back-Propagation-Neural-Network/actions/workflows/pages/pages-build-deployment) 
 
-[本项目](https://github.com/GavinTechStudio/Back-Propagation-Neural-Network)是对项目[GavinTechStudio/bpnn_with_cpp](https://github.com/GavinTechStudio/bpnn_with_cpp)的代码重构，基于C++实现基础BP神经网络，有助于深入理解BP神经网络原理。
+[本项目](https://github.com/GavinTechStudio/Back-Propagation-Neural-Network)是对项目 [**GavinTechStudio/bpnn_with_cpp**](https://github.com/GavinTechStudio/bpnn_with_cpp) 的代码重构，基于C++实现基础BP神经网络，有助于深入理解BP神经网络原理。
 
 ## 项目结构
 
