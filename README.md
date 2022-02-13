@@ -221,12 +221,3 @@ for (size_t i = 0; i < Config::INNODE; ++i) {
 	}
 }
 ```
-
-## TODOLIST
-
-
-- [ ] docs
-
-  - [ ] Net
-  - [ ] Config
-  - [ ] Utils
