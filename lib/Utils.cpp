@@ -6,9 +6,16 @@
 
 #include <iostream>
 #include <fstream>
-#include <unistd.h>
 #include "Utils.h"
 #include "Config.h"
+
+using namespace std;
+
+#if defined(WIN64) || defined(_WIN64) || defined(WIN32) || defined(_WIN32)
+    #include <direct.h>
+#else
+    #include <unistd.h>
+#endif
 
 vector<double> Utils::getFileData(const string &filename) {
     vector<double> res;
