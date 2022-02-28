@@ -9,8 +9,6 @@
 #include "Utils.h"
 #include "Config.h"
 
-using namespace std;
-
 #if defined(WIN64) || defined(_WIN64) || defined(WIN32) || defined(_WIN32)
     #include <direct.h>
 #else
