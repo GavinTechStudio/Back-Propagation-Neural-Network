@@ -4,8 +4,7 @@
  * @Email   gavinsun0921@foxmail.com
  */
 
-#ifndef BPNN_CONFIG_H
-#define BPNN_CONFIG_H
+#pragma once
 
 using std::size_t;
 
@@ -18,6 +17,3 @@ namespace Config {
     const double threshold = 1e-4;
     const size_t max_epoch = 1e6;
 };
-
-
-#endif //BPNN_CONFIG_H

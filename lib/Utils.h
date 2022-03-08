@@ -4,9 +4,7 @@
  * @Email   gavinsun0921@foxmail.com
  */
 
-#ifndef BPNN_UTILS_H
-#define BPNN_UTILS_H
-
+#pragma once
 
 #include <cmath>
 #include <vector>
@@ -27,6 +25,3 @@ namespace Utils {
 
     vector<Sample> getTestData(const string &filename);
 };
-
-
-#endif //BPNN_UTILS_H

@@ -4,8 +4,7 @@
  * @Email   gavinsun0921@foxmail.com
  */
 
-#ifndef BPNN_NET_H
-#define BPNN_NET_H
+#pragma once
 
 #include <vector>
 #include "Config.h"
@@ -95,6 +94,3 @@ public:
     vector<Sample> predict(const vector<Sample> &predictDataSet);
 
 };
-
-
-#endif //BPNN_NET_H
