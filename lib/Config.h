@@ -16,4 +16,4 @@ namespace Config {
     const double lr = 0.8;
     const double threshold = 1e-4;
     const size_t max_epoch = 1e6;
-};
+}

@@ -24,4 +24,4 @@ namespace Utils {
     vector<Sample> getTrainData(const string &filename);
 
     vector<Sample> getTestData(const string &filename);
-};
+}
