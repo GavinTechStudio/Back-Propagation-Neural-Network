@@ -98,9 +98,11 @@ for (size_t k = 0; k < Config::OUTNODE; ++k) {
 ### 2. 计算损失函数（Loss Function）
 
 损失函数定义如下：
+
 $$
 Loss = \frac{1}{2}\sum_k ( y_k - \hat{y_k} )^2
 $$
+
 其中$y_k$为第$k$个输出层节点的目标值（真实值），$\hat{y_k}$为第$k$个输出层节点的值（预测值）。
 
 本项目中的代码实现如下：
@@ -121,9 +123,11 @@ for (size_t k = 0; k < Config::OUTNODE; ++k) {
 #### 3.1 计算$\Delta \lambda_k$（输出层节点偏置值的修正值）
 
 其计算公式如下（激活函数为Sigmoid时）：
+
 $$
 \Delta \lambda_k = - \eta (y_k - \hat{y_k}) \hat{y_k} (1 - \hat{y_k})
 $$
+
 其中$\eta$为学习率（其余变量上方已出现过不再进行标注）。
 
 本项目中的代码实现如下：
@@ -142,9 +146,11 @@ for (size_t k = 0; k < Config::OUTNODE; ++k) {
 #### 3.2 计算$\Delta v_{jk}$（隐藏层节点到输出层节点权重的修正值）
 
 其计算公式如下（激活函数为Sigmoid时）：
+
 $$
 \Delta v_{jk} = \eta ( y_k - \hat{y_k} ) \hat{y_k} ( 1 - \hat{y_k} ) h_j
 $$
+
 其中$h_j$为第$j$个隐藏层节点的值（其余变量上方已出现过不再进行标注）。
 
 本项目中的代码实现如下：
@@ -166,9 +172,11 @@ for (size_t j = 0; j < Config::HIDENODE; ++j) {
 #### 3.3 计算$\Delta \beta_j$（隐藏层节点偏置值的修正值）
 
 其计算公式如下（激活函数为Sigmoid时）：
+
 $$
 \Delta \beta_j = - \eta \sum_k ( y_k - \hat{y_k} ) \hat{y_k} ( 1 - \hat{y_k} ) v_{jk} h_j ( 1 - h_j )
 $$
+
 其中$v_{jk}$为第$j$个隐藏层节点到第$k$个输出层节点的权重（其余变量上方已出现过不再进行标注）。
 
 本项目中的代码实现如下：
@@ -194,9 +202,11 @@ for (size_t j = 0; j < Config::HIDENODE; ++j) {
 #### 3.4 计算$\Delta w_{ij}$（输入层节点到隐藏层节点权重的修正值）
 
 其计算公式如下（激活函数为Sigmoid时）：
+
 $$
 \Delta w_{ij} = \eta \sum_k ( y_k - \hat{y_k} ) \hat{y_k} ( 1 - \hat{y_k} ) v_{jk} h_j ( 1 - h_j ) x_i
 $$
+
 其中$x_i$为第$i$个输入层节点的值（其余变量上方已出现过不再进行标注）。
 
 本项目中的代码实现如下：
