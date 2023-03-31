@@ -37,7 +37,7 @@
 #### 注意：本部分文档包含大量数学公式，由于GitHub markdown不支持数学公式渲染，推荐以下阅读方式：
 
 1. 如果您使用的是Chrome、Edge、Firefox等浏览器，可以安装插件[MathJax Plugin for Github](https://chrome.google.com/webstore/detail/mathjax-plugin-for-github/ioemnmodlmafdkllaclgeombjnmnbima)（需要网络能够访问chrome web store）。
-2. 使用[**PDF**](https://gavintechstudio.github.io/Back-Propagation-Neural-Network/README.pdf)的方式进行阅读（**推荐**）。
+2. 使用[**PDF**](https://gavintechstudio.github.io/Back-Propagation-Neural-Network/README.pdf)的方式进行阅读。
 2. 使用[**预渲染的静态网页**](https://gavintechstudio.github.io/Back-Propagation-Neural-Network/README.html)进行阅读（**推荐**）。
 2. 按`.`键或[点击链接](https://github.dev/GavinTechStudio/Back-Propagation-Neural-Network)进入GitHub在线IDE预览`README.md`文件。
 
